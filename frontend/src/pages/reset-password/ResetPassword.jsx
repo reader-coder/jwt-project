@@ -14,7 +14,6 @@ const ResetPassword = () => {
   const navigate = useNavigate();
   const inputRefs = useRef([]);
   const { backendUrl } = useAuthStore.getState();
-  axios.defaults.withCredentials = true;
 
   const handleInput = (e, index) => {
     if (e.target.value.length > 0 && index < inputRefs.current.length - 1) {
@@ -70,12 +69,18 @@ const ResetPassword = () => {
         if (otp.length < 6) {
           toast.error("Invalid OTP");
         }
-        //I need to add a logic to verify the otp first and then only navigate to the next step.
+        const { data } = await axios.post(
+          backendUrl + "/api/auth/verify-reset-otp",
+          { email: userEmail, otp }
+        );
+        if (!data.success) {
+          toast.error("Please recheck the OTP");
+        }
         setUserOtp(otp);
         setCurrentStep("password");
         toast.success("Enter the new password");
       } catch (error) {
-        toast.error("Invalid OTP");
+        toast.error(error.response.data.message);
       }
     } else if (currentStep === "password") {
       try {
@@ -95,7 +100,7 @@ const ResetPassword = () => {
           toast.error(data.message);
         }
         navigate("/");
-        toast("Password has been updated successfully");
+        toast.success("Password has been updated successfully");
       } catch (error) {
         toast.error(error.response.data.message);
       }
