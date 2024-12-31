@@ -142,7 +142,7 @@ export const sendVerifyOtp = async (req, res) => {
 
     const user = await userModel.findById(userId);
 
-    if (user.isAccountVerified) {
+    if (user.isVerified) {
       return res.status(409).json({
         success: false,
         message: "Account is already verified",
@@ -364,6 +364,12 @@ export const resetPassword = async (req, res) => {
     user.resetOtpExpireAt = 0;
 
     await user.save();
+
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+    });
 
     return res.status(200).json({
       success: true,

@@ -67,11 +67,16 @@ const Navbar = ({ isLoggedIn, userData }) => {
             <DropdownMenuContent>
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              {!userData.isAccountVerfied && (
+              {!userData.isAccountVerified && (
                 <DropdownMenuItem>
                   <button onClick={handleOtpSending}>Verify Email</button>
                 </DropdownMenuItem>
               )}
+              <DropdownMenuItem>
+                <button onClick={() => navigate("/reset-password")}>
+                  Reset Password
+                </button>
+              </DropdownMenuItem>
               <DropdownMenuItem>
                 <button onClick={handleLogout}>Logout</button>
               </DropdownMenuItem>

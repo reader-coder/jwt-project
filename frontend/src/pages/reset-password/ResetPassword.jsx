@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { MdOutlineMailOutline } from "react-icons/md";
 import { useAuthStore } from "@/store";
 import { useNavigate } from "react-router";
@@ -10,10 +10,9 @@ const ResetPassword = () => {
   const [currentStep, setCurrentStep] = useState("email");
   const [userEmail, setUserEmail] = useState("");
   const [userOtp, setUserOtp] = useState("");
-  const [userPassword, setUserPassword] = useState("");
   const navigate = useNavigate();
   const inputRefs = useRef([]);
-  const { backendUrl } = useAuthStore.getState();
+  const { backendUrl, isLoggedIn } = useAuthStore.getState();
 
   const handleInput = (e, index) => {
     if (e.target.value.length > 0 && index < inputRefs.current.length - 1) {
@@ -99,8 +98,11 @@ const ResetPassword = () => {
         if (!data.success) {
           toast.error(data.message);
         }
-        navigate("/");
-        toast.success("Password has been updated successfully");
+        useAuthStore.setState({ isLoggedIn: false, userData: null });
+        navigate("/login");
+        isLoggedIn
+          ? toast.success("Password has been reset. Please login again.")
+          : toast.success("Password has been reset successfully.");
       } catch (error) {
         toast.error(error.response.data.message);
       }

@@ -73,5 +73,11 @@
   }
   body {
     @apply bg-background text-foreground;
+    background: rgb(208, 255, 253);
+    background: linear-gradient(
+      171deg,
+      rgba(208, 255, 253, 1) 0%,
+      rgba(207, 160, 255, 1) 100%
+    );
   }
 }
